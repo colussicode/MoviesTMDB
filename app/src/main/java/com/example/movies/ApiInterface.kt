@@ -6,5 +6,5 @@ import retrofit2.http.Query
 
 interface ApiInterface {
     @GET("movie/now_playing")
-    fun getData(@Query("api_key") apiKey: String): Call<List<MyDataItem>>
+    fun getData(@Query("api_key") apiKey: String): Call<MovieResponse>
 }
