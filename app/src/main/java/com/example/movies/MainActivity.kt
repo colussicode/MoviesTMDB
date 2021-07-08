@@ -1,7 +1,6 @@
 package com.example.movies
 
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,12 +16,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        getMyData();
+        getMyData()
     }
 
     private fun getMyData () {
         val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        interceptor.apply { interceptor.level = HttpLoggingInterceptor.Level.BODY }
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
 
@@ -40,14 +39,6 @@ class MainActivity : AppCompatActivity() {
                 response: Response<MovieResponse?>
             ) {
                 val responseBody = response.body()
-                when (responseBody) {
-                    0 ->
-                }
-
-                val myTextView : TextView = findViewById(R.id.txtView)
-                if (responseBody != null) {
-                    myTextView.text = responseBody.results
-                }
             }
 
             override fun onFailure(call: Call<MovieResponse?>, t: Throwable) {
