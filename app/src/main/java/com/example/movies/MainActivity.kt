@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getMyData () {
+        //API log
         val interceptor = HttpLoggingInterceptor()
         interceptor.apply { interceptor.level = HttpLoggingInterceptor.Level.BODY }
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()

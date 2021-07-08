@@ -17,7 +17,9 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.itemView.apply {  }
+        holder.itemView.apply {
+
+        }
     }
 
     override fun getItemCount(): Int {
