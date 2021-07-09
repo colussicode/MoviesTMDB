@@ -1,4 +1,4 @@
 package com.example.movies
 
-class MyData : ArrayList<MyDataItem>()
+class MyData : ArrayList<MyMovie>()
 

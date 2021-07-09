@@ -1,6 +1,6 @@
 package com.example.movies
 
-data class MyDataItem (
+data class MyMovie (
     val id: String?,
 
     val title: String?,
@@ -12,6 +12,6 @@ data class MyDataItem (
     val poster_path: String?
 )
 
-data class MovieResponse (val dates: MovieDates, val page: Int, val results: List<MyDataItem>)
+data class MovieResponse (val dates: MovieDates, val page: Int, val results: List<MyMovie>)
 
 data class MovieDates (val minimum: String, val maximum: String)

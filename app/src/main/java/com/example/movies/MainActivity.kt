@@ -2,6 +2,7 @@ package com.example.movies
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -13,9 +14,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://api.themoviedb.org/3/"
 class MainActivity : AppCompatActivity() {
+    lateinit var recyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        recyclerView = findViewById(R.id.rv_movies_list)
         getMyData()
     }
 
@@ -39,7 +42,13 @@ class MainActivity : AppCompatActivity() {
                 call: Call<MovieResponse?>,
                 response: Response<MovieResponse?>
             ) {
-                val responseBody = response.body()
+
+                response.body()?.let {
+                    val movieAdapter = MovieAdapter(it.results)
+                    recyclerView.adapter = movieAdapter
+                    //recyclerView.adapter.notifyDataSetChanged()
+                    movieAdapter.notifyDataSetChanged()
+                }
             }
 
             override fun onFailure(call: Call<MovieResponse?>, t: Throwable) {
