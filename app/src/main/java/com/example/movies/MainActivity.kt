@@ -3,8 +3,6 @@ package com.example.movies
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,16 +21,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getMyData () {
-        //API log
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.apply { interceptor.level = HttpLoggingInterceptor.Level.BODY }
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
-
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
-            .client(client)
             .build()
             .create(ApiInterface::class.java)
 
@@ -46,7 +37,6 @@ class MainActivity : AppCompatActivity() {
                 response.body()?.let {
                     val movieAdapter = MovieAdapter(it.results)
                     recyclerView.adapter = movieAdapter
-                    //recyclerView.adapter.notifyDataSetChanged()
                     movieAdapter.notifyDataSetChanged()
                 }
             }

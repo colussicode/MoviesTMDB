@@ -7,25 +7,23 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class MovieAdapter(
-    val movies: List<MyMovie>
+    private val dataset: List<MyMovie>
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>(){
 
-    class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view){
-        fun bindMovie(movie: MyMovie){
-            view.findViewById<TextView>(R.id.movie_title).text = movie.title
-        }
+    class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        val textView: TextView = view.findViewById(R.id.movie_title)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.movie_item, parent, false)
-        return MovieViewHolder(view)
+        val adapterLayout = LayoutInflater.from(parent.context)
+            .inflate(R.layout.movie_item, parent, false)
+        return MovieViewHolder(adapterLayout)
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.bindMovie(movies.get(position))
+        val item = dataset[position]
+        holder.textView.text = item.title
     }
 
-    override fun getItemCount(): Int {
-        return movies.size
-    }
+    override fun getItemCount() = dataset.size
 }
