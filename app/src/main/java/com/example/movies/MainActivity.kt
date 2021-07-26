@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
                 call: Call<MovieResponse?>,
                 response: Response<MovieResponse?>
             ) {
-
                 response.body()?.let {
                     val movieAdapter = MovieAdapter(it.results)
                     recyclerView.adapter = movieAdapter
