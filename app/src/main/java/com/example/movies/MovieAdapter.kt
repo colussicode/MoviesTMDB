@@ -16,6 +16,7 @@ class MovieAdapter(
         val movie_title: TextView = view.findViewById(R.id.movie_title)
         val movie_release_date: TextView = view.findViewById(R.id.movie_release_date)
         val movie_poster: ImageView = view.findViewById(R.id.movie_img)
+        val movie_score: TextView = view.findViewById(R.id.movie_score)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
@@ -31,6 +32,7 @@ class MovieAdapter(
             .into(holder.movie_poster)
         holder.movie_title.text = dataset[position].title
         holder.movie_release_date.text = dataset[position].release_date
+        holder.movie_score.text = dataset[position].vote_average
     }
 
     override fun getItemCount() = dataset.size
