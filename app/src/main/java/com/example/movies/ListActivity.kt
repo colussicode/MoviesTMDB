@@ -3,6 +3,7 @@ package com.example.movies
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movies.adapter.MovieListAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.get_movies)
         recyclerView = findViewById(R.id.rv_movies_list)
         getMyData()
     }
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
-            .create(ApiInterface::class.java)
+            .create(getData::class.java)
 
         val retrofitData = retrofitBuilder.getData("39fd0a08c0cc7fd3041fc14605c22358")
         retrofitData.enqueue(object : Callback<MovieResponse?> {
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                 response: Response<MovieResponse?>
             ) {
                 response.body()?.let {
-                    val movieAdapter = MovieAdapter(it.results)
+                    val movieAdapter = MovieListAdapter(it.results)
                     recyclerView.adapter = movieAdapter
                     movieAdapter.notifyDataSetChanged()
                 }

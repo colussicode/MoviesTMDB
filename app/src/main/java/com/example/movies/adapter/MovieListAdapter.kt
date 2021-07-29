@@ -1,4 +1,4 @@
-package com.example.movies
+ package com.example.movies.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.movies.MyMovie
+import com.example.movies.R
 
-class MovieAdapter(
+ class MovieListAdapter(
     private val dataset: List<MyMovie>
-) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>(){
+) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>(){
 
     class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         val movie_title: TextView = view.findViewById(R.id.movie_title)
@@ -28,8 +30,10 @@ class MovieAdapter(
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val IMG_BASE = "https://image.tmdb.org/t/p/w500/"
 
-        Glide.with(holder.itemView).load(IMG_BASE + dataset[position].poster_path)
+        Glide.with(holder.itemView)
+            .load(IMG_BASE + dataset[position].poster_path)
             .into(holder.movie_poster)
+
         holder.movie_title.text = dataset[position].title
         holder.movie_release_date.text = dataset[position].release_date
         holder.movie_score.text = dataset[position].vote_average
