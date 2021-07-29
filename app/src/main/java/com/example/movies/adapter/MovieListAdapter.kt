@@ -10,11 +10,12 @@ import com.bumptech.glide.Glide
 import com.example.movies.MyMovie
 import com.example.movies.R
 
+
  class MovieListAdapter(
     private val dataset: List<MyMovie>
 ) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>(){
 
-    class MovieViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val movie_title: TextView = view.findViewById(R.id.movie_title)
         val movie_release_date: TextView = view.findViewById(R.id.movie_release_date)
         val movie_poster: ImageView = view.findViewById(R.id.movie_img)
@@ -37,6 +38,13 @@ import com.example.movies.R
         holder.movie_title.text = dataset[position].title
         holder.movie_release_date.text = dataset[position].release_date
         holder.movie_score.text = dataset[position].vote_average
+
+//        holder.search_button.setOnClickListener {
+//            val context = holder.view.context
+//            val intent = Intent(context, SearchActivity::class.java)
+//
+//            context.startActivity(intent)
+//        }
     }
 
     override fun getItemCount() = dataset.size
