@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
-            .create(getData::class.java)
+            .create(moviesData::class.java)
 
         val retrofitData = retrofitBuilder.getData("39fd0a08c0cc7fd3041fc14605c22358")
         retrofitData.enqueue(object : Callback<MovieResponse?> {

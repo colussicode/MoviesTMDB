@@ -45,6 +45,7 @@ import com.example.movies.R
             val context = holder.view.context
             val intent = Intent(context, DetailsActivity::class.java)
 
+            intent.putExtra("id", dataset[position].id)
             context.startActivity(intent)
         }
     }

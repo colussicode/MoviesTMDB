@@ -1,13 +1,27 @@
 package com.example.movies
 
 data class MyMovie (
-    val id: String?,
+    val id: Int,
 
     val title: String?,
 
     val release_date: String?,
 
     val vote_average: String?,
+
+    val poster_path: String?
+)
+
+data class MovieDetails(
+    val id: Int?,
+
+    val title: String?,
+
+    val status : String?,
+
+    val release_date: String?,
+
+    val tagline: String?,
 
     val poster_path: String?
 )
