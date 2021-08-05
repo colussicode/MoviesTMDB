@@ -2,6 +2,7 @@ package com.example.movies
 
 import android.os.Bundle
 import android.view.Menu
+import android.widget.ImageButton
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_bar, menu)
-        val searchView : SearchView = findViewById(R.id.search_bar)
+        val searchItem =  menu?.findItem(R.id.nvar_search)
+        val searchView = searchItem?.actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -90,5 +92,17 @@ class MainActivity : AppCompatActivity() {
                 t.printStackTrace()
             }
         })
+    }
+
+    private fun setFavourite () {
+        var isChecked = true
+        val favButton = findViewById<ImageButton>(R.id.fav_button)
+        favButton.st
+
+        if (isChecked) {
+            favButton.setImageResource(R.drawable.empty_star)
+        } else {
+            favButton.setImageResource(R.drawable.filled_star)
+        }
     }
 }
