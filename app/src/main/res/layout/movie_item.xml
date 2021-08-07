@@ -71,7 +71,9 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@+id/movie_img"
         app:layout_constraintTop_toBottomOf="@+id/movie_title"
-        android:background="@drawable/toggle_image"/>
+        android:background="@drawable/toggle_image"
+        android:textOn=" "
+        android:textOff=" "/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
