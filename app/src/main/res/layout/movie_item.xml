@@ -63,16 +63,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.849" />
 
-    <ImageButton
+    <ToggleButton
         android:id="@+id/fav_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@+id/movie_img"
         app:layout_constraintTop_toBottomOf="@+id/movie_title"
-        android:src="@drawable/empty_star"
-        android:clickable="true"
-        android:onClick="setFavourite"/>
+        android:background="@drawable/toggle_image"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

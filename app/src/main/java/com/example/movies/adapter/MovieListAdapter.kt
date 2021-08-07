@@ -4,8 +4,10 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movies.DetailsActivity
@@ -22,6 +24,7 @@ import com.example.movies.R
         val movie_release_date: TextView = view.findViewById(R.id.movie_release_date)
         val movie_poster: ImageView = view.findViewById(R.id.movie_img)
         val movie_score: TextView = view.findViewById(R.id.movie_score)
+        val fav_button: ToggleButton = view.findViewById(R.id.fav_button)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
@@ -48,6 +51,21 @@ import com.example.movies.R
             intent.putExtra("id", dataset[position].id)
             context.startActivity(intent)
         }
+
+        holder.fav_button.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                if (isChecked) {
+                    if (buttonView != null) {
+                        buttonView.setBackgroundResource(R.drawable.filled_star)
+                    }
+                } else {
+                    if (buttonView != null) {
+                        buttonView.setBackgroundResource(R.drawable.empty_star)
+                    }
+                }
+            }
+
+        })
     }
 
     override fun getItemCount() = dataset.size
