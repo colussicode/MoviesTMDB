@@ -16,8 +16,13 @@ import com.example.movies.R
 
 
  class MovieListAdapter(
-    private val dataset: List<MyMovie>
+    private val dataset: List<MyMovie>,
+    private val favouriteMovieListener: FavouriteMovieListener
 ) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>(){
+
+     interface FavouriteMovieListener {
+         fun onClickFavourite (movieId: Int, isFavourite: Boolean)
+     }
 
     class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val movie_title: TextView = view.findViewById(R.id.movie_title)
@@ -44,6 +49,8 @@ import com.example.movies.R
         holder.movie_release_date.text = dataset[position].release_date
         holder.movie_score.text = dataset[position].vote_average
 
+        val movieId = dataset[position].id
+
         holder.view.setOnClickListener {
             val context = holder.view.context
             val intent = Intent(context, DetailsActivity::class.java)
@@ -63,8 +70,8 @@ import com.example.movies.R
                         buttonView.setBackgroundResource(R.drawable.empty_star)
                     }
                 }
+                favouriteMovieListener.onClickFavourite(movieId, isChecked)
             }
-
         })
     }
 

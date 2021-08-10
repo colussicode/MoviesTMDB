@@ -1,5 +1,7 @@
 package com.example.movies
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.widget.SearchView
@@ -14,19 +16,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 const val BASE_URL = "https://api.themoviedb.org/3/"
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {
     lateinit var recyclerView: RecyclerView
+    lateinit var sharedPref: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.get_movies)
         recyclerView = findViewById(R.id.rv_movies_list)
 
+        sharedPref = getSharedPreferences("ids", Context.MODE_PRIVATE)
+        sharedPref.getInt("movie_id", 0)
         getMyData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_bar, menu)
-        val searchItem =  menu?.findItem(R.id.nvar_search)
+        val searchItem = menu?.findItem(R.id.nvar_search)
         val searchView = searchItem?.actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -44,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                         response: Response<MovieResponse?>
                     ) {
                         response.body()?.let {
-                            val movieAdapter = MovieListAdapter(it.results)
+                            val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
                             recyclerView.adapter = movieAdapter
                             movieAdapter.notifyDataSetChanged()
                         }
@@ -80,7 +85,8 @@ class MainActivity : AppCompatActivity() {
                 response: Response<MovieResponse?>
             ) {
                 response.body()?.let {
-                    val movieAdapter = MovieListAdapter(it.results)
+
+                    val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
                     recyclerView.adapter = movieAdapter
                 }
             }
@@ -91,7 +97,13 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun setFavourite () {
-
+    override fun onClickFavourite(movieId: Int, isFavourite: Boolean) {
+        val editor = sharedPref.edit()
+        if (!isFavourite) {
+            editor.apply {
+                this.putInt("movie_id", movieId)
+                apply()
+            }
+        }
     }
 }
