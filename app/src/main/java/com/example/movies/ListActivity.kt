@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         recyclerView = findViewById(R.id.rv_movies_list)
 
         sharedPref = getSharedPreferences("ids", Context.MODE_PRIVATE)
-        sharedPref.getInt("movie_id", 0)
         getMyData()
     }
 
@@ -85,7 +84,14 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                 response: Response<MovieResponse?>
             ) {
                 response.body()?.let {
-
+                    it.results.forEach {
+                        sharedPref.run {
+                            var movieId = getInt(it.id.toString(), -1)
+                            if (movieId != -1) {
+                                it.isFavourite = true
+                            }
+                        }
+                    }
                     val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
                     recyclerView.adapter = movieAdapter
                 }
@@ -99,11 +105,12 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
 
     override fun onClickFavourite(movieId: Int, isFavourite: Boolean) {
         val editor = sharedPref.edit()
-        if (!isFavourite) {
+        if (isFavourite) {
             editor.apply {
-                this.putInt("movie_id", movieId)
+                this.putInt(movieId.toString(), movieId)
                 apply()
             }
         }
+
     }
 }

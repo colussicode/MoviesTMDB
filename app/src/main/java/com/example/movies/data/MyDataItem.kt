@@ -9,7 +9,9 @@ data class MyMovie (
 
     val vote_average: String?,
 
-    val poster_path: String?
+    val poster_path: String?,
+
+    var isFavourite: Boolean = false
 )
 
 data class MovieDetails(

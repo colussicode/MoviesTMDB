@@ -4,7 +4,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
@@ -50,6 +49,7 @@ import com.example.movies.R
         holder.movie_score.text = dataset[position].vote_average
 
         val movieId = dataset[position].id
+        println(dataset.size)
 
         holder.view.setOnClickListener {
             val context = holder.view.context
@@ -59,20 +59,18 @@ import com.example.movies.R
             context.startActivity(intent)
         }
 
-        holder.fav_button.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
-            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                if (isChecked) {
-                    if (buttonView != null) {
-                        buttonView.setBackgroundResource(R.drawable.filled_star)
-                    }
-                } else {
-                    if (buttonView != null) {
-                        buttonView.setBackgroundResource(R.drawable.empty_star)
-                    }
-                }
-                favouriteMovieListener.onClickFavourite(movieId, isChecked)
-            }
-        })
+        if (dataset[position].isFavourite) {
+            holder.fav_button?.setBackgroundResource(R.drawable.filled_star)
+        } else {
+            holder.fav_button?.setBackgroundResource(R.drawable.empty_star)
+        }
+
+        holder.fav_button.setOnCheckedChangeListener { buttonView, isChecked ->
+
+            dataset[position].isFavourite = !dataset[position].isFavourite
+            notifyDataSetChanged()
+            favouriteMovieListener.onClickFavourite(movieId, isChecked)
+        }
     }
 
     override fun getItemCount() = dataset.size
