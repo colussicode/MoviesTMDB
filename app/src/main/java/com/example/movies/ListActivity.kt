@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.example.movies.adapter.MovieListAdapter
 import com.example.movies.data.Database
-import com.example.movies.data.MovieEntity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,6 +30,11 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         sharedPref = getSharedPreferences("ids", Context.MODE_PRIVATE)
         getMyData()
 
+        val db = Room.databaseBuilder(
+            baseContext,
+            Database::class.java, "movies-database"
+        ).build()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -38,16 +42,9 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         val searchItem = menu?.findItem(R.id.nvar_search)
         val searchView = searchItem?.actionView as SearchView
 
-        val db = Room.databaseBuilder(
-            baseContext,
-            Database::class.java, "movies-database"
-        ).build()
-
-        val movieDao = db.movieDao()
-
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                movieDao.insertSearch(MovieEntity(query, 1))
+
 
                 val retrofitBuilder = Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())

@@ -8,5 +8,5 @@ import com.example.movies.data.MovieEntity
 interface MovieDao {
 
     @Insert()
-    fun insertSearch(vararg searches: MovieEntity)
+    fun insertSearch(vararg movieQuerySearch: MovieEntity)
 }
