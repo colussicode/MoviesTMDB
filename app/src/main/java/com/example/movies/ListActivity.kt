@@ -7,7 +7,10 @@ import android.view.Menu
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.example.movies.adapter.MovieListAdapter
+import com.example.movies.data.Database
+import com.example.movies.data.MovieEntity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -16,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 const val BASE_URL = "https://api.themoviedb.org/3/"
+
 class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {
     lateinit var recyclerView: RecyclerView
     lateinit var sharedPref: SharedPreferences
@@ -26,6 +30,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
 
         sharedPref = getSharedPreferences("ids", Context.MODE_PRIVATE)
         getMyData()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -33,16 +38,28 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         val searchItem = menu?.findItem(R.id.nvar_search)
         val searchView = searchItem?.actionView as SearchView
 
+        val db = Room.databaseBuilder(
+            baseContext,
+            Database::class.java, "movies-database"
+        ).build()
+
+        val movieDao = db.movieDao()
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                movieDao.insertSearch(MovieEntity(query, 1))
+
                 val retrofitBuilder = Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(BASE_URL)
                     .build()
                     .create(moviesData::class.java)
 
-                val retrofitData = retrofitBuilder.searchMovies("39fd0a08c0cc7fd3041fc14605c22358", query.toString())
-                retrofitData.enqueue(object: Callback<MovieResponse?>{
+                val retrofitData = retrofitBuilder.searchMovies(
+                    "39fd0a08c0cc7fd3041fc14605c22358",
+                    query.toString()
+                )
+                retrofitData.enqueue(object : Callback<MovieResponse?> {
                     override fun onResponse(
                         call: Call<MovieResponse?>,
                         response: Response<MovieResponse?>
@@ -70,7 +87,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         return true
     }
 
-    private fun getMyData () {
+    private fun getMyData() {
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
@@ -105,11 +122,14 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
 
     override fun onClickFavourite(movieId: Int, isFavourite: Boolean) {
         val editor = sharedPref.edit()
-        if (isFavourite) {
+        if (!isFavourite) {
             editor.apply {
                 this.putInt(movieId.toString(), movieId)
                 apply()
             }
+        } else {
+            editor.remove(movieId.toString())
+            editor.apply()
         }
 
     }

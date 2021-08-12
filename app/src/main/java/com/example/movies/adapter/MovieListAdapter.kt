@@ -66,9 +66,9 @@ import com.example.movies.R
         }
 
         holder.fav_button.setOnCheckedChangeListener { buttonView, isChecked ->
-
             dataset[position].isFavourite = !dataset[position].isFavourite
-            notifyDataSetChanged()
+            notifyItemChanged(position)
+            //TODO - Usar notifyItemChanged()
             favouriteMovieListener.onClickFavourite(movieId, isChecked)
         }
     }
