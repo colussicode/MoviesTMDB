@@ -9,7 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.example.movies.adapter.MovieListAdapter
-import com.example.movies.data.Database
+import com.example.movies.data.FavouriteMovieEntity
+import com.example.movies.data.MovieSearchEntity
+import com.example.movies.data.RoomSearchDataBase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,11 +35,6 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         sharedPref = getSharedPreferences("ids", Context.MODE_PRIVATE)
         getMyData()
 
-        val db = Room.databaseBuilder(
-            baseContext,
-            Database::class.java, "movies-database"
-        ).build()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -44,7 +44,13 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-
+                CoroutineScope(Dispatchers.IO).launch {
+                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao().insertSearch(
+                        MovieSearchEntity(
+                            0, query
+                        )
+                    )
+                }
 
                 val retrofitBuilder = Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
@@ -99,12 +105,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
             ) {
                 response.body()?.let {
                     it.results.forEach {
-                        sharedPref.run {
-                            var movieId = getInt(it.id.toString(), -1)
-                            if (movieId != -1) {
-                                it.isFavourite = true
-                            }
-                        }
+
                     }
                     val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
                     recyclerView.adapter = movieAdapter
@@ -118,16 +119,18 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
     }
 
     override fun onClickFavourite(movieId: Int, isFavourite: Boolean) {
-        val editor = sharedPref.edit()
-        if (!isFavourite) {
-            editor.apply {
-                this.putInt(movieId.toString(), movieId)
-                apply()
-            }
-        } else {
-            editor.remove(movieId.toString())
-            editor.apply()
-        }
+            if (!isFavourite) {
+                CoroutineScope(Dispatchers.Default).launch {
+                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
+                        .insertMovieId(FavouriteMovieEntity(movieId))
+                }
+            } else {
 
+                CoroutineScope(Dispatchers.Default).launch {
+                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao().deleteMovieId(
+                        FavouriteMovieEntity(movieId)
+                    )
+                }
+            }
     }
 }

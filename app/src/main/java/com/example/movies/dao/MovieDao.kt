@@ -1,12 +1,18 @@
 package com.example.movies.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import com.example.movies.data.MovieEntity
+import androidx.room.*
+import com.example.movies.data.FavouriteMovieEntity
+import com.example.movies.data.MovieSearchEntity
 
 @Dao
 interface MovieDao {
 
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    fun insertSearch(movieQuerySearch: MovieSearchEntity)
+
     @Insert()
-    fun insertSearch(vararg movieQuerySearch: MovieEntity)
+    fun insertMovieId(favouriteMovieId: FavouriteMovieEntity)
+
+    @Delete(entity = FavouriteMovieEntity::class)
+    fun deleteMovieId(favouriteMovieId: FavouriteMovieEntity)
 }

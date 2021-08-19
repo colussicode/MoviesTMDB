@@ -49,7 +49,6 @@ import com.example.movies.R
         holder.movie_score.text = dataset[position].vote_average
 
         val movieId = dataset[position].id
-        println(dataset.size)
 
         holder.view.setOnClickListener {
             val context = holder.view.context
@@ -68,7 +67,6 @@ import com.example.movies.R
         holder.fav_button.setOnCheckedChangeListener { buttonView, isChecked ->
             dataset[position].isFavourite = !dataset[position].isFavourite
             notifyItemChanged(position)
-            //TODO - Usar notifyItemChanged()
             favouriteMovieListener.onClickFavourite(movieId, isChecked)
         }
     }
