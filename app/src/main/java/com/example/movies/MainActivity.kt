@@ -104,9 +104,11 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                 response: Response<MovieResponse?>
             ) {
                 response.body()?.let {
-                    it.results.forEach {
-
+                    CoroutineScope(Dispatchers.IO).launch {
+                       val favouriteMovies =  RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
+                            .searchMovies()
                     }
+
                     val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
                     recyclerView.adapter = movieAdapter
                 }
@@ -119,18 +121,17 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
     }
 
     override fun onClickFavourite(movieId: Int, isFavourite: Boolean) {
-            if (!isFavourite) {
-                CoroutineScope(Dispatchers.Default).launch {
-                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
-                        .insertMovieId(FavouriteMovieEntity(movieId))
-                }
-            } else {
-
-                CoroutineScope(Dispatchers.Default).launch {
-                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao().deleteMovieId(
-                        FavouriteMovieEntity(movieId)
-                    )
-                }
+        if (!isFavourite) {
+            CoroutineScope(Dispatchers.IO).launch {
+                RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
+                    .insertMovieId(FavouriteMovieEntity(movieId))
             }
+        } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                RoomSearchDataBase.getInstance(this@MainActivity).movieDao().deleteMovieId(
+                    FavouriteMovieEntity(movieId)
+                )
+            }
+        }
     }
 }
