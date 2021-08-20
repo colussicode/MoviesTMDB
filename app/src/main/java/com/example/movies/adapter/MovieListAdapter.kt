@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.movies.DetailsActivity
 import com.example.movies.MyMovie
 import com.example.movies.R
+import com.example.movies.data.RoomSearchDataBase
 
 
  class MovieListAdapter(
@@ -48,8 +49,6 @@ import com.example.movies.R
         holder.movie_release_date.text = dataset[position].release_date
         holder.movie_score.text = dataset[position].vote_average
 
-        val movieId = dataset[position].id
-
         holder.view.setOnClickListener {
             val context = holder.view.context
             val intent = Intent(context, DetailsActivity::class.java)
@@ -57,6 +56,9 @@ import com.example.movies.R
             intent.putExtra("id", dataset[position].id)
             context.startActivity(intent)
         }
+
+        val movieId = dataset[position].id
+
 
         if (dataset[position].isFavourite) {
             holder.fav_button?.setBackgroundResource(R.drawable.filled_star)

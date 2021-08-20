@@ -31,8 +31,6 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         super.onCreate(savedInstanceState)
         setContentView(R.layout.get_movies)
         recyclerView = findViewById(R.id.rv_movies_list)
-
-        sharedPref = getSharedPreferences("ids", Context.MODE_PRIVATE)
         getMyData()
 
     }
@@ -104,9 +102,11 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                 response: Response<MovieResponse?>
             ) {
                 response.body()?.let {
-                    CoroutineScope(Dispatchers.IO).launch {
-                       val favouriteMovies =  RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
-                            .searchMovies()
+                    CoroutineScope(Dispatchers.Default).launch {
+                        it.results.forEach {
+                            RoomSearchDataBase.getInstance(this@MainActivity).movieDao().getFavouriteMovies()
+                            it.isFavourite = true
+                        }
                     }
 
                     val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
