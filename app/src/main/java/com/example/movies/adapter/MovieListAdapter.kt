@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.example.movies.DetailsActivity
 import com.example.movies.MyMovie
 import com.example.movies.R
-import com.example.movies.data.RoomSearchDataBase
 
 
  class MovieListAdapter(
@@ -21,7 +20,14 @@ import com.example.movies.data.RoomSearchDataBase
 ) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>(){
 
      interface FavouriteMovieListener {
-         fun onClickFavourite (movieId: Int, isFavourite: Boolean)
+         fun onClickFavourite (
+             movieId: Int,
+             movieTitle: String,
+             movieReleaseDate: String,
+             movieVoteAverage: String,
+             moviePosterPath: String,
+             isFavourite: Boolean,
+         )
      }
 
     class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -58,6 +64,11 @@ import com.example.movies.data.RoomSearchDataBase
         }
 
         val movieId = dataset[position].id
+        val movieTitle = dataset[position].title
+        val movieReleaseDate = dataset[position].release_date
+        val movieVoteAverage = dataset[position].vote_average
+        val moviePosterPath = dataset[position].poster_path
+        val isFavouriteMovie = dataset[position].isFavourite
 
 
         if (dataset[position].isFavourite) {
@@ -69,7 +80,14 @@ import com.example.movies.data.RoomSearchDataBase
         holder.fav_button.setOnCheckedChangeListener { buttonView, isChecked ->
             dataset[position].isFavourite = !dataset[position].isFavourite
             notifyItemChanged(position)
-            favouriteMovieListener.onClickFavourite(movieId, isChecked)
+            favouriteMovieListener.onClickFavourite(
+                movieId,
+                movieTitle.toString(),
+                movieReleaseDate.toString(),
+                movieVoteAverage.toString(),
+                moviePosterPath.toString(),
+                isFavouriteMovie,
+                )
         }
     }
 

@@ -6,12 +6,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
-import com.example.movies.MyMovie
 import com.example.movies.R
+import com.example.movies.data.FavouriteMovieEntity
 
 class FavouriteListAdapter(
-    private val dataset: List<MyMovie>,
-
+    private val dataset: List<FavouriteMovieEntity>
     ): RecyclerView.Adapter<FavouriteListAdapter.FavouriteViewHolder>() {
 
     class FavouriteViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

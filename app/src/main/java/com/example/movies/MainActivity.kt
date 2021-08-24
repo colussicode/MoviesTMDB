@@ -95,6 +95,13 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
             .build()
             .create(moviesData::class.java)
 
+        lateinit var favouriteMovies: List<FavouriteMovieEntity>
+        CoroutineScope(Dispatchers.IO).launch {
+            favouriteMovies =
+                RoomSearchDataBase.getInstance(this@MainActivity).movieDao().getFavouriteMovies()
+        }
+
+
         val retrofitData = retrofitBuilder.getData("39fd0a08c0cc7fd3041fc14605c22358")
         retrofitData.enqueue(object : Callback<MovieResponse?> {
             override fun onResponse(
@@ -102,11 +109,11 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                 response: Response<MovieResponse?>
             ) {
                 response.body()?.let {
-                    CoroutineScope(Dispatchers.Default).launch {
-                        it.results.forEach {
-                            RoomSearchDataBase.getInstance(this@MainActivity).movieDao().getFavouriteMovies()
-                            it.isFavourite = true
+                    it.results.forEach { movie ->
+                        val fMovie = favouriteMovies.find { favouriteMovie ->
+                            favouriteMovie.id == movie.id
                         }
+                        movie.isFavourite = fMovie != null
                     }
 
                     val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
@@ -120,16 +127,34 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         })
     }
 
-    override fun onClickFavourite(movieId: Int, isFavourite: Boolean) {
-        if (!isFavourite) {
+    override fun onClickFavourite(
+        movieId: Int,
+        movieTitle: String,
+        movieReleaseDate: String,
+        movieVoteAverage: String,
+        moviePosterPath: String,
+        isFavourite: Boolean
+    ) {
+        if (isFavourite) {
             CoroutineScope(Dispatchers.IO).launch {
                 RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
-                    .insertMovieId(FavouriteMovieEntity(movieId))
+                    .deleteMovieId(FavouriteMovieEntity(
+                        movieId,
+                        movieTitle,
+                        movieReleaseDate,
+                        movieVoteAverage,
+                        moviePosterPath,
+                        isFavourite))
             }
         } else {
             CoroutineScope(Dispatchers.IO).launch {
-                RoomSearchDataBase.getInstance(this@MainActivity).movieDao().deleteMovieId(
-                    FavouriteMovieEntity(movieId)
+                RoomSearchDataBase.getInstance(this@MainActivity).movieDao().insertMovieId(
+                    FavouriteMovieEntity(movieId,
+                        movieTitle,
+                        movieReleaseDate,
+                        movieVoteAverage,
+                        moviePosterPath,
+                        isFavourite)
                 )
             }
         }

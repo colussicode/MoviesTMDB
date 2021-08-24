@@ -1,7 +1,6 @@
 package com.example.movies.dao
 
 import androidx.room.*
-import com.example.movies.MyMovie
 import com.example.movies.data.FavouriteMovieEntity
 import com.example.movies.data.MovieSearchEntity
 
