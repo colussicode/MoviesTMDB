@@ -10,6 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movies.R
 import com.example.movies.data.FavouriteMovieEntity
+import com.example.movies.data.RoomSearchDataBase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class FavouriteListAdapter(
     private val dataset: List<FavouriteMovieEntity>
@@ -42,6 +46,19 @@ class FavouriteListAdapter(
 
         if (!dataset[position].isFavourite) holder.fav_button?.setBackgroundResource(R.drawable.filled_star)
 
+        holder.fav_button.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                RoomSearchDataBase.getInstance(holder.itemView.context).movieDao()
+                    .deleteMovieId(FavouriteMovieEntity(
+                        dataset[position].id,
+                        dataset[position].title,
+                        dataset[position].release_date,
+                        dataset[position].vote_average,
+                        dataset[position].poster_path,
+                        dataset[position].isFavourite))
+            }
+            notifyItemRemoved(position)
+        }
     }
 
     override fun getItemCount() = dataset.size
