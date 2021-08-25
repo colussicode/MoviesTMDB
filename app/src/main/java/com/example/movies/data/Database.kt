@@ -29,7 +29,7 @@ abstract class RoomSearchDataBase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): RoomSearchDataBase {
-            return Room.databaseBuilder(context, RoomSearchDataBase::class.java, DATABASE_NAME)
+            return Room.databaseBuilder(context, RoomSearchDataBase::class.java, DATABASE_NAME).fallbackToDestructiveMigration()
                 .build()
         }
     }

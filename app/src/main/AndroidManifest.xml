@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Movies">
         <activity
+            android:name=".FavouriteActivity"
+            android:exported="true" />
+        <activity
             android:name=".DetailsActivity"
             android:exported="true" />
         <activity android:name=".SearchActivity" />

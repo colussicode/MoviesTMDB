@@ -9,6 +9,7 @@
         <entry key="app/src/main/res/drawable/filled_star.xml" value="0.353125" />
         <entry key="app/src/main/res/drawable/toggle_image.xml" value="0.353125" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.33695652173913043" />
+        <entry key="app/src/main/res/layout/activity_favourite.xml" value="0.1" />
         <entry key="app/src/main/res/layout/get_movies.xml" value="0.2536231884057971" />
         <entry key="app/src/main/res/layout/movie_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/search_movies.xml" value="0.2536231884057971" />

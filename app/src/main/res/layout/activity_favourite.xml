@@ -9,14 +9,9 @@
     android:orientation="vertical"
     android:background="@color/black">
 
-    <Button
-        android:id="@+id/go_to_favourite_movies"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Favourite Movies" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/movie_catalog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -27,18 +22,18 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/favourite_movies"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:text="Popular Movies"
+        android:text="Favourite Movies"
         android:textColor="@android:color/white"
         android:textSize="20dp"
         android:layout_marginBottom="35dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_movies_list"
+        android:id="@+id/rv_favourite_movies_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

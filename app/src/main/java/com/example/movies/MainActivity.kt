@@ -1,9 +1,11 @@
 package com.example.movies
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
+import android.widget.Button
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -26,11 +28,13 @@ const val BASE_URL = "https://api.themoviedb.org/3/"
 
 class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {
     lateinit var recyclerView: RecyclerView
-    lateinit var sharedPref: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.get_movies)
         recyclerView = findViewById(R.id.rv_movies_list)
+        val goToFavouriteIntentButton: Button = findViewById(R.id.go_to_favourite_movies)
+        goToFavouriteIntentButton.setOnClickListener { goToFavouriteMovies() }
+
         getMyData()
 
     }
@@ -81,9 +85,12 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                CoroutineScope(Dispatchers.IO).launch {
+
+                }
+
                 return true
             }
-
         })
         return true
     }
@@ -158,5 +165,13 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                 )
             }
         }
+    }
+
+    private fun goToFavouriteMovies() {
+        val context = baseContext
+        val intent = Intent(context, FavouriteActivity::class.java)
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
     }
 }
