@@ -24,7 +24,7 @@ class FavouriteActivity : AppCompatActivity() {
             val data = RoomSearchDataBase.getInstance(this@FavouriteActivity).movieDao()
                 .getFavouriteMovies()
 
-            val movieAdapter = FavouriteListAdapter(data)
+            val movieAdapter = FavouriteListAdapter(data.toMutableList())
             recyclerView.adapter = movieAdapter
         }
     }

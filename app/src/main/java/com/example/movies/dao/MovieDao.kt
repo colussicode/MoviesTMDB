@@ -10,8 +10,8 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSearch(movieQuerySearch: MovieSearchEntity)
 
-    @Query("SELECT * FROM movie_searches")
-    fun getSearch(): List<MovieSearchEntity>
+    @Query("SELECT * FROM movie_searches WHERE typed_string LIKE :search")
+    fun getSearch(search: String): List<MovieSearchEntity>
 
     @Insert()
     fun insertMovieId(id: FavouriteMovieEntity)
@@ -19,6 +19,6 @@ interface MovieDao {
     @Query("SELECT * FROM favourite_movies")
     fun getFavouriteMovies(): List<FavouriteMovieEntity>
 
-    @Delete(entity = FavouriteMovieEntity::class)
+    @Delete()
     fun deleteMovieId(favouriteMovieId: FavouriteMovieEntity)
 }

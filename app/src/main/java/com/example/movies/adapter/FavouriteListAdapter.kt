@@ -1,5 +1,7 @@
 package com.example.movies.adapter
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +16,11 @@ import com.example.movies.data.RoomSearchDataBase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FavouriteListAdapter(
-    private val dataset: List<FavouriteMovieEntity>
-    ): RecyclerView.Adapter<FavouriteListAdapter.FavouriteViewHolder>() {
+    private var dataset: MutableList<FavouriteMovieEntity>
+) : RecyclerView.Adapter<FavouriteListAdapter.FavouriteViewHolder>() {
 
     class FavouriteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val movie_title: TextView = view.findViewById(R.id.movie_title)
@@ -47,17 +50,31 @@ class FavouriteListAdapter(
         if (!dataset[position].isFavourite) holder.fav_button?.setBackgroundResource(R.drawable.filled_star)
 
         holder.fav_button.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                RoomSearchDataBase.getInstance(holder.itemView.context).movieDao()
-                    .deleteMovieId(FavouriteMovieEntity(
-                        dataset[position].id,
-                        dataset[position].title,
-                        dataset[position].release_date,
-                        dataset[position].vote_average,
-                        dataset[position].poster_path,
-                        dataset[position].isFavourite))
-            }
-            notifyItemRemoved(position)
+            AlertDialog.Builder(holder.itemView.context)
+                .setTitle("Delete Movie")
+                .setMessage("Are you sure you want to remove this movie from favourites?")
+                .setPositiveButton("Yes") { p0, p1 ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        RoomSearchDataBase.getInstance(holder.itemView.context)
+                            .movieDao()
+                            .deleteMovieId(
+                                FavouriteMovieEntity(
+                                    dataset[position].id,
+                                    dataset[position].title,
+                                    dataset[position].release_date,
+                                    dataset[position].vote_average,
+                                    dataset[position].poster_path,
+                                    dataset[position].isFavourite
+                                )
+                            )
+                        dataset.remove(dataset[position])
+                        withContext(Dispatchers.Main){
+                            notifyDataSetChanged()
+                        }
+                    }
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
     }
 

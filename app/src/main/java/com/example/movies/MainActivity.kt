@@ -1,22 +1,19 @@
 package com.example.movies
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
 import android.widget.Button
 import android.widget.SearchView
+import android.widget.ViewAnimator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.example.movies.adapter.MovieListAdapter
 import com.example.movies.data.FavouriteMovieEntity
 import com.example.movies.data.MovieSearchEntity
 import com.example.movies.data.RoomSearchDataBase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -45,14 +42,17 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         val searchView = searchItem?.actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+
             override fun onQueryTextSubmit(query: String?): Boolean {
                 CoroutineScope(Dispatchers.IO).launch {
                     RoomSearchDataBase.getInstance(this@MainActivity).movieDao().insertSearch(
                         MovieSearchEntity(
-                            0, query
+                            query.toString()
                         )
                     )
                 }
+
 
                 val retrofitBuilder = Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
@@ -86,7 +86,8 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 CoroutineScope(Dispatchers.IO).launch {
-
+                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
+                        .getSearch(newText.toString())
                 }
 
                 return true
@@ -96,6 +97,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
     }
 
     private fun getMyData() {
+
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
@@ -145,23 +147,28 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         if (isFavourite) {
             CoroutineScope(Dispatchers.IO).launch {
                 RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
-                    .deleteMovieId(FavouriteMovieEntity(
+                    .deleteMovieId(
+                        FavouriteMovieEntity(
+                            movieId,
+                            movieTitle,
+                            movieReleaseDate,
+                            movieVoteAverage,
+                            moviePosterPath,
+                            isFavourite
+                        )
+                    )
+            }
+        } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                RoomSearchDataBase.getInstance(this@MainActivity).movieDao().insertMovieId(
+                    FavouriteMovieEntity(
                         movieId,
                         movieTitle,
                         movieReleaseDate,
                         movieVoteAverage,
                         moviePosterPath,
-                        isFavourite))
-            }
-        } else {
-            CoroutineScope(Dispatchers.IO).launch {
-                RoomSearchDataBase.getInstance(this@MainActivity).movieDao().insertMovieId(
-                    FavouriteMovieEntity(movieId,
-                        movieTitle,
-                        movieReleaseDate,
-                        movieVoteAverage,
-                        moviePosterPath,
-                        isFavourite)
+                        isFavourite
+                    )
                 )
             }
         }
@@ -171,7 +178,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         val context = baseContext
         val intent = Intent(context, FavouriteActivity::class.java)
 
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
 }

@@ -10,7 +10,7 @@ const val DATABASE_NAME = "movies"
 
 @Database(
     entities = [MovieSearchEntity::class, FavouriteMovieEntity::class],
-    version = 2,
+    version = 5,
     exportSchema = false
 )
 abstract class RoomSearchDataBase : RoomDatabase() {

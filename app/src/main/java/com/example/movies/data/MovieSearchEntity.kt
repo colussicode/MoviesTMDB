@@ -1,17 +1,13 @@
 package com.example.movies.data
 
-import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "movie_searches")
+@Entity(tableName = "movie_searches", indices = [Index(value = ["typed_string"], unique = true)])
 data class MovieSearchEntity(
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
-    @ColumnInfo(name = "movie_id")
-    val id: Int,
-
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "typed_string")
-    val movieQuerySearch: String?,
+    val movieQuerySearch: String,
 )
