@@ -9,6 +9,7 @@ import android.widget.SearchView
 import android.widget.ViewAnimator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movies.adapter.FilteredListAdapter
 import com.example.movies.adapter.MovieListAdapter
 import com.example.movies.data.FavouriteMovieEntity
 import com.example.movies.data.MovieSearchEntity
@@ -25,6 +26,7 @@ const val BASE_URL = "https://api.themoviedb.org/3/"
 
 class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {
     lateinit var recyclerView: RecyclerView
+    lateinit var filteredRecyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.get_movies)
@@ -84,10 +86,16 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
                 CoroutineScope(Dispatchers.IO).launch {
-                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
-                        .getSearch(newText.toString())
+                   val movies =  RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
+                        .getSearch(newText)
+
+                    if (movies != null) {
+                        filteredRecyclerView.visibility = View.VISIBLE
+                        val filteredListAdapter = FilteredListAdapter(movies)
+                        filteredRecyclerView.adapter = filteredListAdapter
+                    }
                 }
 
                 return true
@@ -97,7 +105,6 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
     }
 
     private fun getMyData() {
-
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)

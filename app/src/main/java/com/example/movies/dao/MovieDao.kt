@@ -10,7 +10,7 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSearch(movieQuerySearch: MovieSearchEntity)
 
-    @Query("SELECT * FROM movie_searches WHERE typed_string LIKE :search")
+    @Query("SELECT * FROM movie_searches WHERE typed_string LIKE '%' || :search || '%'")
     fun getSearch(search: String): List<MovieSearchEntity>
 
     @Insert()
