@@ -91,11 +91,13 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                    val movies =  RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
                         .getSearch(newText)
 
-                    if (movies != null) {
-                        filteredRecyclerView.visibility = View.VISIBLE
-                        val filteredListAdapter = FilteredListAdapter(movies)
-                        filteredRecyclerView.adapter = filteredListAdapter
+                    withContext(Dispatchers.Main){
+                            filteredRecyclerView = findViewById(R.id.filtered_list)
+                            val filteredListAdapter = FilteredListAdapter(movies)
+                            filteredRecyclerView.adapter = filteredListAdapter
+                            filteredRecyclerView.visibility = View.VISIBLE
                     }
+                    if (newText.isEmpty()) filteredRecyclerView.visibility = View.GONE
                 }
 
                 return true
