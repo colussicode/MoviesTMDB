@@ -45,11 +45,8 @@
         android:textSize="20dp"
         android:layout_marginBottom="35dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_movies_list"
+    <FrameLayout
+        android:id="@+id/listFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-
+        android:layout_height="556dp" />
 </LinearLayout>
