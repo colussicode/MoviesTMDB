@@ -1,9 +1,7 @@
 package com.example.movies
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.adapter.MovieListAdapter
@@ -18,18 +16,17 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MovieListFragment : Fragment(), MovieListAdapter.FavouriteMovieListener {
+class ActionFragment : Fragment(R.layout.fragment_movie_list), MovieListAdapter.FavouriteMovieListener {
     lateinit var recyclerView: RecyclerView
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         getMyData()
-        var rootView : View? = inflater.inflate(R.layout.fragment_movie_list, container, false)
-        return rootView
     }
+
+    fun newInstance(param1: String) =
+        ActionFragment().fragment
 
     private fun getMyData() {
         recyclerView = requireView().findViewById(R.id.rv_movies_list)
@@ -37,7 +34,7 @@ class MovieListFragment : Fragment(), MovieListAdapter.FavouriteMovieListener {
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
-            .create(moviesData::class.java)
+            .create(MoviesData::class.java)
 
         lateinit var favouriteMovies: List<FavouriteMovieEntity>
         CoroutineScope(Dispatchers.IO).launch {
@@ -52,6 +49,7 @@ class MovieListFragment : Fragment(), MovieListAdapter.FavouriteMovieListener {
                 call: Call<MovieResponse?>,
                 response: Response<MovieResponse?>
             ) {
+
                 response.body()?.let {
                     it.results.forEach { movie ->
                         val fMovie = favouriteMovies.find { favouriteMovie ->
@@ -60,7 +58,7 @@ class MovieListFragment : Fragment(), MovieListAdapter.FavouriteMovieListener {
                         movie.isFavourite = fMovie != null
                     }
 
-                    val movieAdapter = MovieListAdapter(it.results, this@MovieListFragment)
+                    val movieAdapter = MovieListAdapter(it.results, this@ActionFragment)
                     recyclerView.adapter = movieAdapter
                 }
             }
@@ -112,5 +110,4 @@ class MovieListFragment : Fragment(), MovieListAdapter.FavouriteMovieListener {
             }
         }
     }
-
 }

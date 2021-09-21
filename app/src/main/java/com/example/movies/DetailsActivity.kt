@@ -29,7 +29,7 @@ class DetailsActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
-            .create(moviesData::class.java)
+            .create(MoviesData::class.java)
 
         val movieId = intent.extras?.getInt("id")
 
