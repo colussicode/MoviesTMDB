@@ -6,14 +6,17 @@ import android.view.Menu
 import android.view.View
 import android.widget.Button
 import android.widget.SearchView
-import android.widget.ViewAnimator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.movies.adapter.FilteredListAdapter
 import com.example.movies.adapter.MovieListAdapter
+import com.example.movies.adapter.ViewPageAdapter
 import com.example.movies.data.FavouriteMovieEntity
 import com.example.movies.data.MovieSearchEntity
 import com.example.movies.data.RoomSearchDataBase
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,18 +28,37 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val BASE_URL = "https://api.themoviedb.org/3/"
 
 class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {
-    lateinit var recyclerView: RecyclerView
     lateinit var filteredRecyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.get_movies)
-        recyclerView = findViewById(R.id.rv_movies_list)
         val goToFavouriteIntentButton: Button = findViewById(R.id.go_to_favourite_movies)
         goToFavouriteIntentButton.setOnClickListener { goToFavouriteMovies() }
 
-        getMyData()
+        val tabLayout: TabLayout = findViewById(R.id.tab_layout)
+        val viewPager: ViewPager2 = findViewById(R.id.view_pager)
+        val adapter = ViewPageAdapter(supportFragmentManager, lifecycle)
 
+        viewPager.adapter = adapter
+
+        TabLayoutMediator(tabLayout, viewPager) {tab, position ->
+            when(position) {
+                0 -> {
+                    tab.text = "Action"
+                }
+                1 -> {
+                    tab.text = "Drama"
+                }
+                2 -> {
+                    tab.text = "Fantasy"
+                }
+                3 -> {
+                    tab.text = "War"
+                }
+            }
+        }.attach()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_bar, menu)
@@ -60,7 +82,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(BASE_URL)
                     .build()
-                    .create(moviesData::class.java)
+                    .create(MoviesData::class.java)
 
                 val retrofitData = retrofitBuilder.searchMovies(
                     "39fd0a08c0cc7fd3041fc14605c22358",
@@ -73,8 +95,9 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                     ) {
                         response.body()?.let {
                             val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
-                            recyclerView.adapter = movieAdapter
-                            movieAdapter.notifyDataSetChanged()
+                            filteredRecyclerView = findViewById(R.id.action_category_movies_list)
+                            filteredRecyclerView.adapter = movieAdapter
+                           movieAdapter.notifyDataSetChanged()
                         }
                     }
 
@@ -97,7 +120,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                             filteredRecyclerView.adapter = filteredListAdapter
                             filteredRecyclerView.visibility = View.VISIBLE
                     }
-                    if (newText.isEmpty()) filteredRecyclerView.visibility = View.GONE
+                   if (newText.isEmpty()) filteredRecyclerView.visibility = View.GONE
                 }
 
                 return true
@@ -106,43 +129,13 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         return true
     }
 
-    private fun getMyData() {
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
-            .build()
-            .create(moviesData::class.java)
 
-        lateinit var favouriteMovies: List<FavouriteMovieEntity>
-        CoroutineScope(Dispatchers.IO).launch {
-            favouriteMovies =
-                RoomSearchDataBase.getInstance(this@MainActivity).movieDao().getFavouriteMovies()
-        }
+    private fun goToFavouriteMovies() {
+        val context = baseContext
+        val intent = Intent(context, FavouriteActivity::class.java)
 
-
-        val retrofitData = retrofitBuilder.getData("39fd0a08c0cc7fd3041fc14605c22358")
-        retrofitData.enqueue(object : Callback<MovieResponse?> {
-            override fun onResponse(
-                call: Call<MovieResponse?>,
-                response: Response<MovieResponse?>
-            ) {
-                response.body()?.let {
-                    it.results.forEach { movie ->
-                        val fMovie = favouriteMovies.find { favouriteMovie ->
-                            favouriteMovie.id == movie.id
-                        }
-                        movie.isFavourite = fMovie != null
-                    }
-
-                    val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
-                    recyclerView.adapter = movieAdapter
-                }
-            }
-
-            override fun onFailure(call: Call<MovieResponse?>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
 
     override fun onClickFavourite(
@@ -155,8 +148,21 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
     ) {
         if (isFavourite) {
             CoroutineScope(Dispatchers.IO).launch {
-                RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
-                    .deleteMovieId(
+                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
+                        .deleteMovieId(
+                            FavouriteMovieEntity(
+                                movieId,
+                                movieTitle,
+                                movieReleaseDate,
+                                movieVoteAverage,
+                                moviePosterPath,
+                                isFavourite
+                            )
+                        )
+            }
+        } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao().insertMovieId(
                         FavouriteMovieEntity(
                             movieId,
                             movieTitle,
@@ -167,27 +173,6 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                         )
                     )
             }
-        } else {
-            CoroutineScope(Dispatchers.IO).launch {
-                RoomSearchDataBase.getInstance(this@MainActivity).movieDao().insertMovieId(
-                    FavouriteMovieEntity(
-                        movieId,
-                        movieTitle,
-                        movieReleaseDate,
-                        movieVoteAverage,
-                        moviePosterPath,
-                        isFavourite
-                    )
-                )
-            }
         }
-    }
-
-    private fun goToFavouriteMovies() {
-        val context = baseContext
-        val intent = Intent(context, FavouriteActivity::class.java)
-
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(intent)
     }
 }
