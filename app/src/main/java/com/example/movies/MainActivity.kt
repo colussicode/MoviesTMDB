@@ -7,16 +7,16 @@ import android.view.View
 import android.widget.Button
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.movies.adapter.FilteredListAdapter
 import com.example.movies.adapter.MovieListAdapter
+import com.example.movies.adapter.ViewPageAdapter
 import com.example.movies.data.FavouriteMovieEntity
 import com.example.movies.data.MovieSearchEntity
 import com.example.movies.data.RoomSearchDataBase
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,7 +28,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val BASE_URL = "https://api.themoviedb.org/3/"
 
 class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {
-    var firstFragment = ActionFragment()
     lateinit var filteredRecyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,26 +37,28 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
 
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
         val viewPager: ViewPager2 = findViewById(R.id.view_pager)
+        val adapter = ViewPageAdapter(supportFragmentManager, lifecycle)
 
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.listFragment, firstFragment)
-            commit()
-        }
-    }
+        viewPager.adapter = adapter
 
-    class FragmentAdapter (activity: AppCompatActivity) : FragmentStateAdapter(activity) {
-        override fun getItemCount(): Int {
-            return 4
-        }
-
-        override fun createFragment(position: Int): Fragment {
-            return when(position) {
-                0 -> ActionFragment()
-                1 ->
+        TabLayoutMediator(tabLayout, viewPager) {tab, position ->
+            when(position) {
+                0 -> {
+                    tab.text = "Action"
+                }
+                1 -> {
+                    tab.text = "Drama"
+                }
+                2 -> {
+                    tab.text = "Fantasy"
+                }
+                3 -> {
+                    tab.text = "War"
+                }
             }
-        }
-
+        }.attach()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_bar, menu)
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                     ) {
                         response.body()?.let {
                             val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
-                            filteredRecyclerView = findViewById(R.id.rv_movies_list)
+                            filteredRecyclerView = findViewById(R.id.action_category_movies_list)
                             filteredRecyclerView.adapter = movieAdapter
                            movieAdapter.notifyDataSetChanged()
                         }

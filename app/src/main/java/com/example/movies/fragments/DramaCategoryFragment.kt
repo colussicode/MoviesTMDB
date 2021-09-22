@@ -1,9 +1,15 @@
-package com.example.movies
+package com.example.movies.fragments
 
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movies.BASE_URL
+import com.example.movies.MovieResponse
+import com.example.movies.MoviesData
+import com.example.movies.R
 import com.example.movies.adapter.MovieListAdapter
 import com.example.movies.data.FavouriteMovieEntity
 import com.example.movies.data.RoomSearchDataBase
@@ -16,20 +22,19 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ActionFragment : Fragment(R.layout.fragment_movie_list), MovieListAdapter.FavouriteMovieListener {
+
+class DramaCategoryFragment : Fragment(R.layout.fragment_drama_category),
+    MovieListAdapter.FavouriteMovieListener {
+
     lateinit var recyclerView: RecyclerView
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getMyData()
+        getDramaMovies()
     }
 
-    fun newInstance(param1: String) =
-        ActionFragment().fragment
-
-    private fun getMyData() {
-        recyclerView = requireView().findViewById(R.id.rv_movies_list)
+    private fun getDramaMovies() {
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
@@ -39,11 +44,14 @@ class ActionFragment : Fragment(R.layout.fragment_movie_list), MovieListAdapter.
         lateinit var favouriteMovies: List<FavouriteMovieEntity>
         CoroutineScope(Dispatchers.IO).launch {
             favouriteMovies =
-                context?.let { RoomSearchDataBase.getInstance(it).movieDao().getFavouriteMovies() }!!
+                context?.let {
+                    RoomSearchDataBase.getInstance(it).movieDao().getFavouriteMovies()
+                }!!
         }
 
 
-        val retrofitData = retrofitBuilder.getData("39fd0a08c0cc7fd3041fc14605c22358")
+        val retrofitData =
+            retrofitBuilder.getMoviesByCategory("39fd0a08c0cc7fd3041fc14605c22358", 18)
         retrofitData.enqueue(object : Callback<MovieResponse?> {
             override fun onResponse(
                 call: Call<MovieResponse?>,
@@ -58,7 +66,8 @@ class ActionFragment : Fragment(R.layout.fragment_movie_list), MovieListAdapter.
                         movie.isFavourite = fMovie != null
                     }
 
-                    val movieAdapter = MovieListAdapter(it.results, this@ActionFragment)
+                    recyclerView = requireView().findViewById(R.id.drama_category_movies_list)
+                    val movieAdapter = MovieListAdapter(it.results, this@DramaCategoryFragment)
                     recyclerView.adapter = movieAdapter
                 }
             }

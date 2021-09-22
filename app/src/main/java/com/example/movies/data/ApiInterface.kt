@@ -14,4 +14,7 @@ interface MoviesData {
 
     @GET("movie/{movie_id}")
     fun getMovieDetails(@Path("movie_id") movieId : Int, @Query("api_key") apiKey: String) : Call<MovieDetails>
+
+    @GET("discover/movie")
+    fun getMoviesByCategory(@Query("api_key") apiKey : String, @Query("with_genres") genreId : Int) : Call<MovieResponse>
 }
