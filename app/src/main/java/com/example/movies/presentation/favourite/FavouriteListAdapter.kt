@@ -1,7 +1,6 @@
-package com.example.movies.adapter
+package com.example.movies.presentation.favourite
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movies.R
-import com.example.movies.data.FavouriteMovieEntity
+import com.example.movies.data.models.FavouriteMovieEntity
 import com.example.movies.data.RoomSearchDataBase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

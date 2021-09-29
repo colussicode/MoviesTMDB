@@ -1,4 +1,4 @@
-package com.example.movies.data
+package com.example.movies.data.models
 
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo

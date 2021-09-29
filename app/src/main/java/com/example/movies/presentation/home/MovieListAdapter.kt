@@ -1,4 +1,4 @@
- package com.example.movies.adapter
+ package com.example.movies.presentation.home
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.movies.DetailsActivity
+import com.example.movies.presentation.details.DetailsActivity
 import com.example.movies.MyMovie
 import com.example.movies.R
 

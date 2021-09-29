@@ -1,9 +1,9 @@
-package com.example.movies
+package com.example.movies.presentation.favourite
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
-import com.example.movies.adapter.FavouriteListAdapter
+import com.example.movies.R
 import com.example.movies.data.RoomSearchDataBase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

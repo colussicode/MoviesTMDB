@@ -1,8 +1,8 @@
-package com.example.movies.dao
+package com.example.movies.data.local
 
 import androidx.room.*
-import com.example.movies.data.FavouriteMovieEntity
-import com.example.movies.data.MovieSearchEntity
+import com.example.movies.data.models.FavouriteMovieEntity
+import com.example.movies.data.models.MovieSearchEntity
 
 @Dao
 interface MovieDao {

@@ -12,23 +12,12 @@ data class MyMovie (
 
     val poster_path: String?,
 
-    var isFavourite: Boolean = false
-)
-
-data class MovieDetails(
-    val id: Int?,
-
-    val title: String?,
-
-    val status : String?,
-
-    val release_date: String?,
+    var isFavourite: Boolean = false,
 
     val tagline: String?,
 
-    val poster_path: String?
+    val status : String?
 )
-
 data class MovieResponse (val dates: MovieDates, val page: Int, val results: List<MyMovie>)
 
 data class MovieDates (val minimum: String, val maximum: String)

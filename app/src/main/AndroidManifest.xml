@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Movies">
         <activity
-            android:name=".FavouriteActivity"
+            android:name=".presentation.favourite.FavouriteActivity"
             android:exported="true" />
         <activity
-            android:name=".DetailsActivity"
+            android:name=".presentation.details.DetailsActivity"
             android:exported="true" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".MainActivity">

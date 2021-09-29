@@ -1,17 +1,15 @@
-package com.example.movies.fragments
+package com.example.movies.presentation.home.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.BASE_URL
 import com.example.movies.MovieResponse
 import com.example.movies.MoviesData
 import com.example.movies.R
-import com.example.movies.adapter.MovieListAdapter
-import com.example.movies.data.FavouriteMovieEntity
+import com.example.movies.presentation.home.MovieListAdapter
+import com.example.movies.data.models.FavouriteMovieEntity
 import com.example.movies.data.RoomSearchDataBase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

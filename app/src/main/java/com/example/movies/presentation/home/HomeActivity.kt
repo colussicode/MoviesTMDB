@@ -1,4 +1,4 @@
-package com.example.movies
+package com.example.movies.presentation.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,12 +9,12 @@ import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.example.movies.adapter.FilteredListAdapter
-import com.example.movies.adapter.MovieListAdapter
-import com.example.movies.adapter.ViewPageAdapter
-import com.example.movies.data.FavouriteMovieEntity
-import com.example.movies.data.MovieSearchEntity
+import com.example.movies.MovieService
+import com.example.movies.data.models.FavouriteMovieEntity
+import com.example.movies.data.models.MovieSearchEntity
 import com.example.movies.data.RoomSearchDataBase
+import com.example.movies.data.remote.retrofitBuilder
+import com.example.movies.presentation.favourite.FavouriteActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
@@ -27,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://api.themoviedb.org/3/"
 
-class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {
+class HomeActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {
     lateinit var filteredRecyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,19 +70,14 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
 
             override fun onQueryTextSubmit(query: String?): Boolean {
                 CoroutineScope(Dispatchers.IO).launch {
-                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao().insertSearch(
+                    RoomSearchDataBase.getInstance(this@HomeActivity).movieDao().insertSearch(
                         MovieSearchEntity(
                             query.toString()
                         )
                     )
                 }
-
-
-                val retrofitBuilder = Retrofit.Builder()
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl(BASE_URL)
-                    .build()
-                    .create(MoviesData::class.java)
+                val retrofitInstance by retrofitBuilder<MovieService>()
+                retrofitInstance.
 
                 val retrofitData = retrofitBuilder.searchMovies(
                     "39fd0a08c0cc7fd3041fc14605c22358",
@@ -94,7 +89,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                         response: Response<MovieResponse?>
                     ) {
                         response.body()?.let {
-                            val movieAdapter = MovieListAdapter(it.results, this@MainActivity)
+                            val movieAdapter = MovieListAdapter(it.results, this@HomeActivity)
                             filteredRecyclerView = findViewById(R.id.action_category_movies_list)
                             filteredRecyclerView.adapter = movieAdapter
                            movieAdapter.notifyDataSetChanged()
@@ -111,7 +106,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
 
             override fun onQueryTextChange(newText: String): Boolean {
                 CoroutineScope(Dispatchers.IO).launch {
-                   val movies =  RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
+                   val movies =  RoomSearchDataBase.getInstance(this@HomeActivity).movieDao()
                         .getSearch(newText)
 
                     withContext(Dispatchers.Main){
@@ -148,7 +143,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
     ) {
         if (isFavourite) {
             CoroutineScope(Dispatchers.IO).launch {
-                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao()
+                    RoomSearchDataBase.getInstance(this@HomeActivity).movieDao()
                         .deleteMovieId(
                             FavouriteMovieEntity(
                                 movieId,
@@ -162,7 +157,7 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
             }
         } else {
             CoroutineScope(Dispatchers.IO).launch {
-                    RoomSearchDataBase.getInstance(this@MainActivity).movieDao().insertMovieId(
+                    RoomSearchDataBase.getInstance(this@HomeActivity).movieDao().insertMovieId(
                         FavouriteMovieEntity(
                             movieId,
                             movieTitle,

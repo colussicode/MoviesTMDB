@@ -1,17 +1,15 @@
-package com.example.movies.fragments
+package com.example.movies.presentation.home.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.BASE_URL
 import com.example.movies.MovieResponse
 import com.example.movies.MoviesData
 import com.example.movies.R
-import com.example.movies.adapter.MovieListAdapter
-import com.example.movies.data.FavouriteMovieEntity
+import com.example.movies.presentation.home.MovieListAdapter
+import com.example.movies.data.models.FavouriteMovieEntity
 import com.example.movies.data.RoomSearchDataBase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +20,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class WarCategoryFragment : Fragment(R.layout.fragment_war_category),
+class FantasyCategoryFragment : Fragment(R.layout.fragment_fantasy_category),
     MovieListAdapter.FavouriteMovieListener {
 
     lateinit var recyclerView: RecyclerView
@@ -50,7 +48,7 @@ class WarCategoryFragment : Fragment(R.layout.fragment_war_category),
 
 
         val retrofitData =
-            retrofitBuilder.getMoviesByCategory("39fd0a08c0cc7fd3041fc14605c22358", 10752)
+            retrofitBuilder.getMoviesByCategory("39fd0a08c0cc7fd3041fc14605c22358", 14)
         retrofitData.enqueue(object : Callback<MovieResponse?> {
             override fun onResponse(
                 call: Call<MovieResponse?>,
@@ -65,8 +63,8 @@ class WarCategoryFragment : Fragment(R.layout.fragment_war_category),
                         movie.isFavourite = fMovie != null
                     }
 
-                    recyclerView = requireView().findViewById(R.id.war_category_movies_list)
-                    val movieAdapter = MovieListAdapter(it.results, this@WarCategoryFragment)
+                    recyclerView = requireView().findViewById(R.id.fantasy_category_movies_list)
+                    val movieAdapter = MovieListAdapter(it.results, this@FantasyCategoryFragment)
                     recyclerView.adapter = movieAdapter
                 }
             }
@@ -118,6 +116,5 @@ class WarCategoryFragment : Fragment(R.layout.fragment_war_category),
             }
         }
     }
-
 
 }

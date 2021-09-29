@@ -1,4 +1,4 @@
-package com.example.movies.adapter
+package com.example.movies.presentation.home
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
-import com.example.movies.data.MovieSearchEntity
+import com.example.movies.data.models.MovieSearchEntity
 
 class FilteredListAdapter(
     private var dataset: List<MovieSearchEntity>
