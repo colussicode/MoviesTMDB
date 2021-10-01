@@ -1,16 +1,18 @@
 package com.example.movies.presentation.home.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.movies.BASE_URL
-import com.example.movies.MovieResponse
-import com.example.movies.MoviesData
-import com.example.movies.R
+import com.example.movies.*
 import com.example.movies.presentation.home.MovieListAdapter
 import com.example.movies.data.models.FavouriteMovieEntity
 import com.example.movies.data.RoomSearchDataBase
+import com.example.movies.databinding.FragmentActionCategoryBinding
+import com.example.movies.presentation.home.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,22 +22,49 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ActionCategoryFragment : Fragment(R.layout.fragment_action_category), MovieListAdapter.FavouriteMovieListener {
-    lateinit var recyclerView: RecyclerView
+class ActionCategoryFragment : Fragment() {
 
+    private lateinit var binding: FragmentActionCategoryBinding
+    private val viewModel: HomeViewModel by activityViewModels()
+
+    private val adapter: MovieListAdapter by lazy {
+        MovieListAdapter(object: MovieListAdapter.FavouriteMovieListener {
+            override fun onClickFavourite(myMovie: MyMovie) {
+                this@ActionCategoryFragment.onClickFavourite(myMovie)
+            }
+
+            override fun showDetails(id: Int) {
+                this@ActionCategoryFragment.showDetails(id)
+            }
+        })
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentActionCategoryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setView()
         getActionMovies()
     }
 
+    private fun setView() = binding.run {
+        rvMovies.adapter = adapter
+    }
+
+    private fun setObservable() {
+        viewModel.movies.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
+    }
+
     private fun getActionMovies() {
-        recyclerView = requireView().findViewById(R.id.action_category_movies_list)
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
-            .build()
-            .create(MoviesData::class.java)
 
         lateinit var favouriteMovies: List<FavouriteMovieEntity>
         CoroutineScope(Dispatchers.IO).launch {
@@ -59,8 +88,6 @@ class ActionCategoryFragment : Fragment(R.layout.fragment_action_category), Movi
                         movie.isFavourite = fMovie != null
                     }
 
-                    val movieAdapter = MovieListAdapter(it.results, this@ActionCategoryFragment)
-                    recyclerView.adapter = movieAdapter
                 }
             }
 
@@ -70,14 +97,7 @@ class ActionCategoryFragment : Fragment(R.layout.fragment_action_category), Movi
         })
     }
 
-    override fun onClickFavourite(
-        movieId: Int,
-        movieTitle: String,
-        movieReleaseDate: String,
-        movieVoteAverage: String,
-        moviePosterPath: String,
-        isFavourite: Boolean
-    ) {
+    private fun onClickFavourite(myMovie: MyMovie) {
         if (isFavourite) {
             CoroutineScope(Dispatchers.IO).launch {
                 context?.let {

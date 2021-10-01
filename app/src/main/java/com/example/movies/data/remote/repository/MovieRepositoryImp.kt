@@ -1,6 +1,5 @@
 package com.example.movies.data.remote.repository
 
-import com.example.movies.MovieDetails
 import com.example.movies.MovieResponse
 import com.example.movies.MovieService
 import com.example.movies.MyMovie

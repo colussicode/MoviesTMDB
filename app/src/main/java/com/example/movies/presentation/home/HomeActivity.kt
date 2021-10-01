@@ -10,10 +10,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.movies.MovieService
+import com.example.movies.MyMovie
 import com.example.movies.data.models.FavouriteMovieEntity
 import com.example.movies.data.models.MovieSearchEntity
 import com.example.movies.data.RoomSearchDataBase
+import com.example.movies.data.models.MovieGenre
 import com.example.movies.data.remote.retrofitBuilder
+import com.example.movies.databinding.GetMoviesBinding
+import com.example.movies.databinding.MovieItemBinding
+import com.example.movies.presentation.details.DetailsActivity
 import com.example.movies.presentation.favourite.FavouriteActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -27,38 +32,41 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://api.themoviedb.org/3/"
 
-class HomeActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {
-    lateinit var filteredRecyclerView: RecyclerView
+class HomeActivity : AppCompatActivity() {
+
+    private lateinit var binding: GetMoviesBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.get_movies)
-        val goToFavouriteIntentButton: Button = findViewById(R.id.go_to_favourite_movies)
-        goToFavouriteIntentButton.setOnClickListener { goToFavouriteMovies() }
+        binding = GetMoviesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val tabLayout: TabLayout = findViewById(R.id.tab_layout)
-        val viewPager: ViewPager2 = findViewById(R.id.view_pager)
+        setTabLayout()
+        setListeners()
+    }
+
+    private fun setView () = binding.run {
+
+    }
+
+    private fun setTabLayout() = binding.run {
         val adapter = ViewPageAdapter(supportFragmentManager, lifecycle)
 
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) {tab, position ->
-            when(position) {
-                0 -> {
-                    tab.text = "Action"
-                }
-                1 -> {
-                    tab.text = "Drama"
-                }
-                2 -> {
-                    tab.text = "Fantasy"
-                }
-                3 -> {
-                    tab.text = "War"
-                }
+            MovieGenre.values().find {
+                it.ordinal == position
+            }?.let {
+                tab.text = it.name
             }
         }.attach()
     }
 
+    private fun setListeners () = binding.run {
+        favouriteButton.setOnClickListener { goToFavouriteMovies() }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_bar, menu)
@@ -133,14 +141,7 @@ class HomeActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
         context.startActivity(intent)
     }
 
-    override fun onClickFavourite(
-        movieId: Int,
-        movieTitle: String,
-        movieReleaseDate: String,
-        movieVoteAverage: String,
-        moviePosterPath: String,
-        isFavourite: Boolean
-    ) {
+    private fun onClickFavourite(myMovie: MyMovie) {
         if (isFavourite) {
             CoroutineScope(Dispatchers.IO).launch {
                     RoomSearchDataBase.getInstance(this@HomeActivity).movieDao()
@@ -169,5 +170,14 @@ class HomeActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
                     )
             }
         }
+    }
+
+    private fun showDetails(id: Int) {
+        val context = baseContext
+
+        val intent = Intent(context, DetailsActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("id", id)
+        context.startActivity(intent)
     }
 }

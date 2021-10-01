@@ -9,24 +9,21 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 
 class HomeViewModel(val repository: MovieRepository): ViewModel() {
+    private val _uiState = MutableLiveData<UiState>(UiState.Resume)
+    val uiState: LiveData<UiState> = _uiState
+
     private val _movies = MutableLiveData<List<MyMovie>>(emptyList())
     val movies: LiveData<List<MyMovie>> = _movies
 
-    private val _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _isError = MutableLiveData<Throwable>(null)
-    val isError: LiveData<Throwable> = _isError
-
     fun getMovies() {
         viewModelScope.launch {
-            _isLoading.value = true
+           _uiState.value = UiState.Loading
             repository.getData()
                 .catch {
-                    _isError.value = it
+
                 }
                 .onCompletion {
-                    _isLoading.value = false
+                   _uiState.value = UiState.Resume
                 }
                 .collect {
                     _movies.value = it.results
@@ -35,14 +32,14 @@ class HomeViewModel(val repository: MovieRepository): ViewModel() {
     }
 
     fun searchMovies(query: String) {
-        _isLoading.value = true
+        _uiState.value = UiState.Loading
         viewModelScope.launch {
             repository.searchMovies(query)
                 .catch {
-                    _isError.value = it
+
                 }
                 .onCompletion {
-                    _isLoading.value = false
+                    _uiState.value = UiState.Resume
                 }
                 .collect {
                     _movies.value = it.results
@@ -50,15 +47,15 @@ class HomeViewModel(val repository: MovieRepository): ViewModel() {
         }
     }
 
-    fun getMoviesByCategory(movieId: Int) {
-        _isLoading.value = true
+    fun getMoviesByCategory(genreId: Int) {
+        _uiState.value = UiState.Loading
         viewModelScope.launch {
-            repository.getMoviesByCategory(movieId)
+            repository.getMoviesByCategory(genreId)
                 .catch {
-                    _isError.value = it
+
                 }
                 .onCompletion {
-                    _isLoading.value = false
+                    _uiState.value = UiState.Resume
                 }
                 .collect {
                     _movies.value = it.results
@@ -71,4 +68,16 @@ class HomeViewModel(val repository: MovieRepository): ViewModel() {
             return HomeViewModel(repository) as T
         }
     }
+}
+
+sealed class Resource<out T: Any?> {
+    data class Data<out T: Any?>(val data: T) : Resource<T>()
+    object Loading: Resource<Nothing>()
+    data class Error(val throwable: Throwable) : Resource<Nothing>()
+}
+
+sealed class UiState {
+    object Resume : UiState()
+    data class Error(val throwable: Throwable) : UiState()
+    object Loading : UiState()
 }

@@ -22,7 +22,7 @@
         />
 
     <Button
-        android:id="@+id/go_to_favourite_movies"
+        android:id="@+id/favourite_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Favourite Movies" />
