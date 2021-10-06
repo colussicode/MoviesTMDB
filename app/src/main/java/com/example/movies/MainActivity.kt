@@ -25,6 +25,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
+//TODO: Estudar Activity, Content Provider, Services e Broadcast Receiver - MVVM e Clean Arquitecture
+
 const val BASE_URL = "https://api.themoviedb.org/3/"
 
 class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListener {

@@ -16,7 +16,6 @@ class FilteredListAdapter(
         val filteredMovieTitle : TextView = view.findViewById(R.id.filter_text)
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilteredListViewHolder {
         val adapterLayout =
             LayoutInflater.from(parent.context).inflate(R.layout.filter_item, parent, false)
