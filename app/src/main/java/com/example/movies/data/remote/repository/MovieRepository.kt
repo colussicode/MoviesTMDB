@@ -1,7 +1,7 @@
 package com.example.movies.data.remote.repository
 
-import com.example.movies.MovieResponse
-import com.example.movies.MyMovie
+import com.example.movies.data.models.MovieResponse
+import com.example.movies.data.models.MyMovie
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.movies.MyMovie
+import com.example.movies.data.models.MyMovie
 import com.example.movies.R
 import com.example.movies.databinding.MovieItemBinding
 import com.example.movies.utils.Constant.IMG_BASE_URL

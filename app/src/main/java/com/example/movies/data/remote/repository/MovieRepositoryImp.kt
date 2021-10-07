@@ -1,14 +1,15 @@
 package com.example.movies.data.remote.repository
 
-import com.example.movies.MovieResponse
-import com.example.movies.MovieService
-import com.example.movies.MyMovie
-import com.example.movies.data.remote.retrofitBuilder
+import com.example.movies.data.models.MovieResponse
+import com.example.movies.data.remote.service.MovieService
+import com.example.movies.data.models.MyMovie
+import com.example.movies.data.local.MovieDao
+import com.example.movies.data.remote.RetrofitService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class MovieRepositoryImp() : MovieRepository{
-    private val service: MovieService by retrofitBuilder()
+class MovieRepositoryImp(private val movieDao: MovieDao) : MovieRepository{
+    private val service = RetrofitService.retrofitInstance.create(MovieService::class.java)
 
     override fun getData(): Flow<MovieResponse> = flow {
         emit(service.getData())
