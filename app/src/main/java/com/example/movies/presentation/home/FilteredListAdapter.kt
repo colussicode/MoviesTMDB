@@ -19,7 +19,7 @@ class FilteredListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilteredListViewHolder {
         val adapterLayout =
-            LayoutInflater.from(parent.context).inflate(R.layout.filter_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_filter_result, parent, false)
 
         return FilteredListViewHolder(adapterLayout)
     }

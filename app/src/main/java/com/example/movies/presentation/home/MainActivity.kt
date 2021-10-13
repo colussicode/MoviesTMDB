@@ -8,7 +8,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import androidx.lifecycle.ViewModelProvider
 import com.example.movies.R
 import com.example.movies.data.local.RoomSearchDataBase
 import com.example.movies.data.models.MovieGenre
@@ -37,12 +36,13 @@ class HomeActivity : AppCompatActivity() {
         )
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = GetMoviesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setViews()
-        //setTabLayout()
+        setTabLayout()
         setListeners()
     }
 

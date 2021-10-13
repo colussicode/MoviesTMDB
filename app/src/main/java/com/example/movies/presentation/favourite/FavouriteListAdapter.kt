@@ -31,7 +31,7 @@ class FavouriteListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouriteViewHolder {
         val adapterLayout = LayoutInflater.from(parent.context)
-            .inflate(R.layout.movie_item, parent, false)
+            .inflate(R.layout.item_movie_card, parent, false)
         return FavouriteViewHolder(adapterLayout)
     }
 

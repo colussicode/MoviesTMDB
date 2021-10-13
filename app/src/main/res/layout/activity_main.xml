@@ -21,23 +21,5 @@
         android:layout_height="wrap_content"
         />
 
-    <Button
-        android:id="@+id/favourite_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Favourite Movies" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/filtered_list"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_width="match_parent"
-        android:layout_height="138dp"
-        android:background="@color/white"
-        android:visibility="gone" />
-
-
-    <FrameLayout
-        android:id="@+id/listFragment"
-        android:layout_width="match_parent"
-        android:layout_height="682dp" />
 </LinearLayout>

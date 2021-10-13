@@ -6,13 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.example.movies.data.local.RoomSearchDataBase
 import com.example.movies.data.models.MyMovie
+import com.example.movies.data.remote.repository.MovieRepositoryImp
 import com.example.movies.databinding.FragmentHomeMoviesBinding
 
 class HomeMoviesFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeMoviesBinding
-    private val viewModel: HomeViewModel by activityViewModels<HomeViewModel>()
+    private val viewModel by activityViewModels<HomeViewModel> {
+        HomeViewModel.HomeViewModelFactory(
+            MovieRepositoryImp(
+                RoomSearchDataBase.getInstance(
+                    requireContext()
+                ).movieDao()
+            )
+        )
+    }
+
 
     private val adapter: MovieListAdapter by lazy {
         MovieListAdapter(object: MovieListAdapter.FavouriteMovieListener {

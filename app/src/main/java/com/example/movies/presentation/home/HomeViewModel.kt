@@ -3,7 +3,10 @@ package com.example.movies.presentation.home
 import androidx.lifecycle.*
 import com.example.movies.data.models.MyMovie
 import com.example.movies.data.remote.repository.MovieRepository
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: MovieRepository) : ViewModel() {

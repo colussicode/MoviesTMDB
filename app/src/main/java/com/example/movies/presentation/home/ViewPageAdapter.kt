@@ -12,6 +12,6 @@ class ViewPageAdapter(private val fragment: FragmentManager, lifecycle: Lifecycl
     }
 
     override fun createFragment(position: Int): Fragment {
-        return fragment.findFragmentByTag("home") as HomeMoviesFragment
+        return HomeMoviesFragment()
     }
 }
