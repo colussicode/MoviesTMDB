@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.movies.data.local.RoomSearchDataBase
+import com.example.movies.data.local.getMovieDao
 import com.example.movies.data.models.MyMovie
 import com.example.movies.data.remote.repository.MovieRepositoryImp
 import com.example.movies.databinding.FragmentHomeMoviesBinding
@@ -16,11 +17,7 @@ class HomeMoviesFragment : Fragment() {
     private lateinit var binding: FragmentHomeMoviesBinding
     private val viewModel by activityViewModels<HomeViewModel> {
         HomeViewModel.HomeViewModelFactory(
-            MovieRepositoryImp(
-                RoomSearchDataBase.getInstance(
-                    requireContext()
-                ).movieDao()
-            )
+            MovieRepositoryImp(getMovieDao(requireContext()))
         )
     }
 
@@ -34,7 +31,9 @@ class HomeMoviesFragment : Fragment() {
             override fun showDetails(id: Int) {
                 // TODO: Show details
             }
-        })
+        }).also { adapter ->
+            binding.rvMovies.adapter = adapter
+        }
     }
 
     override fun onCreateView(
@@ -48,17 +47,30 @@ class HomeMoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setView()
         setObservable()
     }
 
-    private fun setView() = binding.run {
-        rvMovies.adapter = adapter
-    }
 
     private fun setObservable() {
         viewModel.movies.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+
+        viewModel.uiState.observe(viewLifecycleOwner) {
+            when(it) {
+                is UiState.Loading -> showLoading(it.isLoading)
+                is UiState.Error -> {/*TODO:*/}
+                UiState.Resume -> {/*TODO*/}
+            }
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.flip.displayedChild = if (isLoading) progress else layout
+    }
+
+    companion object {
+        private const val layout = 0
+        private const val progress = 1
     }
 }

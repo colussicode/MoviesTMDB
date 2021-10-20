@@ -35,3 +35,5 @@ abstract class RoomSearchDataBase : RoomDatabase() {
         }
     }
 }
+
+fun getMovieDao(context: Context) = RoomSearchDataBase.getInstance(context).movieDao()

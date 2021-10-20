@@ -3,10 +3,6 @@ package com.example.movies.presentation.home
 import androidx.lifecycle.*
 import com.example.movies.data.models.MyMovie
 import com.example.movies.data.remote.repository.MovieRepository
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
@@ -17,20 +13,44 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
     val movies: LiveData<List<MyMovie>> = _movies
 
     fun getMovies() {
-        repository.getData().customCollect {
-            _movies.value = it.results
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading(true)
+            try {
+                val data = repository.getData()
+                _movies.value = data
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e)
+            } finally {
+                _uiState.value = UiState.Loading(false)
+            }
         }
     }
 
     fun searchMovies(query: String) {
-        repository.searchMovies(query).customCollect {
-            _movies.value = it.results
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading(true)
+            try {
+                val data = repository.searchMovies(query)
+                _movies.value = data
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e)
+            } finally {
+                _uiState.value = UiState.Loading(false)
+            }
         }
     }
 
     fun getMoviesByCategory(genreId: Int) {
-        repository.getMoviesByCategory(genreId).customCollect {
-            _movies.value = it.results
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading(true)
+            try {
+                val data = repository.getMoviesByCategory(genreId)
+                _movies.value = data
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e)
+            } finally {
+                _uiState.value = UiState.Loading(false)
+            }
         }
     }
 
@@ -41,20 +61,20 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
         }
     }
 
-    private fun <T> Flow<T>.customCollect(onSuccess: (T) -> Unit) {
-        _uiState.value = UiState.Loading
-        viewModelScope.launch {
-            catch { error: Throwable ->
-                _uiState.value = UiState.Error(error)
-            }
-            onCompletion {
-                _uiState.value = UiState.Resume
-            }
-            collect {
-                onSuccess(it)
-            }
-        }
-    }
+//    private fun <T> Flow<T>.customCollect(onSuccess: (T) -> Unit) {
+//        _uiState.value = UiState.Loading
+//        viewModelScope.launch {
+//            this@customCollect.catch { error: Throwable ->
+//                _uiState.value = UiState.Error(error)
+//            }
+//                .onCompletion {
+//                    _uiState.value = UiState.Resume
+//                }
+//                .collect {
+//                    onSuccess(it)
+//                }
+//        }
+//    }
 }
 
 sealed class Resource<out T : Any?> {
@@ -66,5 +86,5 @@ sealed class Resource<out T : Any?> {
 sealed class UiState {
     object Resume : UiState()
     data class Error(val throwable: Throwable) : UiState()
-    object Loading : UiState()
+    data class Loading(val isLoading: Boolean) : UiState()
 }

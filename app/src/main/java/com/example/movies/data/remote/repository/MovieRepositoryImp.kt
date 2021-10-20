@@ -11,20 +11,11 @@ import kotlinx.coroutines.flow.flow
 class MovieRepositoryImp(private val movieDao: MovieDao) : MovieRepository{
     private val service = RetrofitService.retrofitInstance.create(MovieService::class.java)
 
-    override fun getData(): Flow<MovieResponse> = flow {
-        emit(service.getData())
-    }
+    override suspend fun getData() = service.getData().results
 
-    override fun searchMovies(query: String): Flow<MovieResponse> = flow {
-        emit(service.searchMovies(query))
-    }
+    override suspend fun searchMovies(query: String) = service.searchMovies(query).results
 
-    override fun getMovieDetails(movieId: Int): Flow<MyMovie> = flow {
-        emit(service.getMovieDetails(movieId))
-    }
+    override suspend fun getMovieDetails(movieId: Int) = service.getMovieDetails(movieId)
 
-    override fun getMoviesByCategory(genreId: Int): Flow<MovieResponse> = flow {
-        emit(service.getMoviesByCategory(genreId))
-    }
-
+    override suspend fun getMoviesByCategory(genreId: Int) = service.getMoviesByCategory(genreId).results
 }

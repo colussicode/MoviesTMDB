@@ -5,11 +5,11 @@ import com.example.movies.data.models.MyMovie
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
-    fun getData(): Flow<MovieResponse>
+    suspend fun getData(): List<MyMovie>
 
-    fun searchMovies(query : String): Flow<MovieResponse>
+    suspend fun searchMovies(query : String): List<MyMovie>
 
-    fun getMovieDetails(movieId : Int) : Flow<MyMovie>
+    suspend fun getMovieDetails(movieId : Int) : MyMovie
 
-    fun getMoviesByCategory(genreId : Int) : Flow<MovieResponse>
+    suspend fun getMoviesByCategory(genreId : Int) : List<MyMovie>
 }

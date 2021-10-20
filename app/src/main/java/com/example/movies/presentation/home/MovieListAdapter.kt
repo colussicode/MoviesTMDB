@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movies.data.models.MyMovie
 import com.example.movies.R
-import com.example.movies.databinding.MovieItemBinding
+import com.example.movies.databinding.ItemMovieCardBinding
 import com.example.movies.utils.Constant.IMG_BASE_URL
 
 
@@ -17,7 +17,7 @@ import com.example.movies.utils.Constant.IMG_BASE_URL
 ) : ListAdapter<MyMovie, MovieListAdapter.MovieViewHolder>(DiffMovie()) {
 
      override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-         val binding = MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+         val binding = ItemMovieCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
          return MovieViewHolder(binding)
      }
 
@@ -31,7 +31,7 @@ import com.example.movies.utils.Constant.IMG_BASE_URL
          fun showDetails(id: Int)
      }
 
-    inner class MovieViewHolder(val binding: MovieItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class MovieViewHolder(val binding: ItemMovieCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind (item: MyMovie) = binding.run {
             Glide.with(itemView)
                 .load(IMG_BASE_URL + item.poster_path)
