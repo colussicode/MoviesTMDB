@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.movies.data.local.RoomSearchDataBase
 import com.example.movies.data.local.getMovieDao
 import com.example.movies.data.models.MyMovie
 import com.example.movies.data.remote.repository.MovieRepositoryImp
@@ -20,7 +19,6 @@ class HomeMoviesFragment : Fragment() {
             MovieRepositoryImp(getMovieDao(requireContext()))
         )
     }
-
 
     private val adapter: MovieListAdapter by lazy {
         MovieListAdapter(object: MovieListAdapter.FavouriteMovieListener {

@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.properties.ReadOnlyProperty
 
 object RetrofitService {
-    val retrofitInstance = Retrofit.Builder()
+    val retrofitInstance: Retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .baseUrl(BASE_URL)
         .client(OkHttpClient.Builder().apply {

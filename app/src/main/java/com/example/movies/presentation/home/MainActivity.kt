@@ -38,7 +38,6 @@ class HomeActivity : AppCompatActivity() {
         )
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -53,7 +52,7 @@ class HomeActivity : AppCompatActivity() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                MovieGenre.values().get(position).let {
+                MovieGenre.values()[position].let {
                     if(it == MovieGenre.ALL) {
                         viewModel.getMovies()
                     } else {

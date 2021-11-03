@@ -13,7 +13,7 @@ class FilteredListAdapter(
 ) : RecyclerView.Adapter<FilteredListAdapter.FilteredListViewHolder>() {
 
     class FilteredListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val filteredMovieTitle : TextView = view.findViewById(R.id.filter_text)
+        val filteredMovieTitle: TextView = view.findViewById(R.id.filter_text)
     }
 
 

@@ -25,12 +25,15 @@ abstract class RoomSearchDataBase : RoomDatabase() {
 
         fun getInstance(context: Context): RoomSearchDataBase {
             return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
+                instance ?: buildDatabase(context).also {
+                    instance = it
+                }
             }
         }
 
         private fun buildDatabase(context: Context): RoomSearchDataBase {
-            return Room.databaseBuilder(context, RoomSearchDataBase::class.java, DATABASE_NAME).fallbackToDestructiveMigration()
+            return Room.databaseBuilder(context, RoomSearchDataBase::class.java, DATABASE_NAME)
+                .fallbackToDestructiveMigration()
                 .build()
         }
     }

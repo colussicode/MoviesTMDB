@@ -17,6 +17,7 @@ data class MyMovie (
 
     val status : String?
 )
+
 data class MovieResponse (val dates: MovieDates, val page: Int, val results: List<MyMovie>)
 
 data class MovieDates (val minimum: String, val maximum: String)

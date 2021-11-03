@@ -11,7 +11,6 @@ import com.example.movies.R
 import com.example.movies.databinding.ItemMovieCardBinding
 import com.example.movies.utils.Constant.IMG_BASE_URL
 
-
  class MovieListAdapter(
     private val favouriteMovieListener: FavouriteMovieListener,
 ) : ListAdapter<MyMovie, MovieListAdapter.MovieViewHolder>(DiffMovie()) {
@@ -31,7 +30,7 @@ import com.example.movies.utils.Constant.IMG_BASE_URL
          fun showDetails(id: Int)
      }
 
-    inner class MovieViewHolder(val binding: ItemMovieCardBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class MovieViewHolder(private val binding: ItemMovieCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind (item: MyMovie) = binding.run {
             Glide.with(itemView)
                 .load(IMG_BASE_URL + item.poster_path)
@@ -51,7 +50,7 @@ import com.example.movies.utils.Constant.IMG_BASE_URL
                 favButton.setBackgroundResource(R.drawable.empty_star)
             }
 
-            favButton.setOnCheckedChangeListener { buttonView, isChecked ->
+            favButton.setOnCheckedChangeListener { _, _ ->
                 item.run {
                     isFavourite = !isFavourite
                     notifyItemChanged(position)
