@@ -9,26 +9,14 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.movies.presenter.DetailsActivity
-import com.example.movies.MyMovie
 import com.example.movies.R
+import com.example.movies.domain.model.Movie
 
 
  class MovieListAdapter(
-    private val dataset: List<MyMovie>,
-    private val favouriteMovieListener: FavouriteMovieListener
+    private val dataset: List<Movie>,
 ) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>(){
 
-     interface FavouriteMovieListener {
-         fun onClickFavourite (
-             movieId: Int,
-             movieTitle: String,
-             movieReleaseDate: String,
-             movieVoteAverage: String,
-             moviePosterPath: String,
-             isFavourite: Boolean,
-         )
-     }
 
     class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val movie_title: TextView = view.findViewById(R.id.movie_title)
@@ -48,47 +36,22 @@ import com.example.movies.R
         val IMG_BASE = "https://image.tmdb.org/t/p/w500/"
 
         Glide.with(holder.itemView)
-            .load(IMG_BASE + dataset[position].poster_path)
+            .load(IMG_BASE + dataset[position].id)
             .into(holder.movie_poster)
 
         holder.movie_title.text = dataset[position].title
-        holder.movie_release_date.text = dataset[position].release_date
-        holder.movie_score.text = dataset[position].vote_average
+        holder.movie_release_date.text = dataset[position].releaseDate
 
         holder.view.setOnClickListener {
             val context = holder.view.context
-            val intent = Intent(context, DetailsActivity::class.java)
 
-            intent.putExtra("id", dataset[position].id)
-            context.startActivity(intent)
         }
 
         val movieId = dataset[position].id
         val movieTitle = dataset[position].title
-        val movieReleaseDate = dataset[position].release_date
-        val movieVoteAverage = dataset[position].vote_average
-        val moviePosterPath = dataset[position].poster_path
-        val isFavouriteMovie = dataset[position].isFavourite
+        val movieReleaseDate = dataset[position].releaseDate
+        val movieVoteAverage = dataset[position].voteAverage
 
-
-        if (dataset[position].isFavourite) {
-            holder.fav_button?.setBackgroundResource(R.drawable.filled_star)
-        } else {
-            holder.fav_button?.setBackgroundResource(R.drawable.empty_star)
-        }
-
-        holder.fav_button.setOnCheckedChangeListener { buttonView, isChecked ->
-            dataset[position].isFavourite = !dataset[position].isFavourite
-            notifyItemChanged(position)
-            favouriteMovieListener.onClickFavourite(
-                movieId,
-                movieTitle.toString(),
-                movieReleaseDate.toString(),
-                movieVoteAverage.toString(),
-                moviePosterPath.toString(),
-                isFavouriteMovie,
-                )
-        }
     }
 
     override fun getItemCount() = dataset.size
