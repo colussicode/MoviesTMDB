@@ -21,4 +21,5 @@ interface MovieDao {
 
     @Delete()
     fun deleteMovieId(favouriteMovieId: FavouriteMovieEntity)
+
 }

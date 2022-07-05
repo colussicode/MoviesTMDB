@@ -1,4 +1,4 @@
-package com.example.movies
+package com.example.movies.presenter
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +15,7 @@ import com.example.movies.adapter.ViewPageAdapter
 import com.example.movies.data.FavouriteMovieEntity
 import com.example.movies.data.MovieSearchEntity
 import com.example.movies.data.RoomSearchDataBase
+import com.example.movies.presenter.FavouriteActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
@@ -133,11 +134,10 @@ class MainActivity : AppCompatActivity(), MovieListAdapter.FavouriteMovieListene
 
 
     private fun goToFavouriteMovies() {
-        val context = baseContext
-        val intent = Intent(context, FavouriteActivity::class.java)
+        val intent = Intent(baseContext, FavouriteActivity::class.java)
 
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(intent)
+        baseContext.startActivity(intent)
     }
 
     override fun onClickFavourite(

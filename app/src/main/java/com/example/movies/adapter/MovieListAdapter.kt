@@ -9,7 +9,7 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.movies.DetailsActivity
+import com.example.movies.presenter.DetailsActivity
 import com.example.movies.MyMovie
 import com.example.movies.R
 
